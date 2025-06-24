@@ -1,0 +1,61 @@
+# ===================
+# Java & Maven
+# ===================
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+**/*.log
+**/*.class
+**/*.jar
+
+# ===================
+# IDEs
+# ===================
+.idea/
+*.iml
+*.ipr
+*.iws
+*.sw?
+.vscode/
+*.DS_Store
+
+# ===================
+# OS
+# ===================
+Thumbs.db
+ehthumbs.db
+.DS_Store
+*.tmp
+
+# ===================
+# Logs & dumps
+# ===================
+*.log
+hs_err_pid*.log
+heapdump.hprof
+
+# ===================
+# Spring Boot
+# ===================
+/*.war
+/*.jar
+
+# ===================
+# Env
+# ===================
+.env
+.env.local
+*.secret
+
+# ===================
+# Docker
+# ===================
+/docker-data/
+*.pid
+
+# ===================
+# Misc
+# ===================
+node_modules/
+npm-debug.log
+dist/
+build/

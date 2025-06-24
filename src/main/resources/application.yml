@@ -1,0 +1,33 @@
+spring:
+  profiles:
+    active: local  # can be overridden by SPRING_PROFILES_ACTIVE env variable
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.ai.texttosql: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method       # Sorts endpoints by HTTP method
+    tags-sorter: alpha              # Sorts tags alphabetically
+    doc-expansion: list             # Expand only the list of tags initially
+    display-request-duration: true  # Show request duration in UI
+    filter: true                    # Adds a search bar to filter API operations
+
