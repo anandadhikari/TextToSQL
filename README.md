@@ -88,7 +88,7 @@ docker compose up -d
 
 # Run Ollama on host manually
 ollama serve
-ollama pull llama3
+ollama pull llama3.2
 
 # Run Spring Boot from IDE with profile=local
 ```
@@ -103,11 +103,13 @@ docker compose -f docker-compose.prod.yml up --build
 
 ## 🔊 Sample Request
 
-**POST** `/api/v1/query`
+**POST** `/api/v1/query/text-to-sql`
 
 ```json
 {
-  "question": "Show all customers who placed orders in March"
+  "naturalLanguageQuery": "Get all users created after 2022",
+  "explainQuery": false,
+  "includeSchemaContext": true
 }
 ```
 
@@ -115,16 +117,25 @@ docker compose -f docker-compose.prod.yml up --build
 
 ```txt
 Given the schema: <...>, write a MySQL query for:
-"Show all customers who placed orders in March"
+"Get all users created after 2022"
 ```
 
 **Sample Response:**
 
 ```json
 {
-  "query": "SELECT * FROM customers JOIN orders ON ... WHERE MONTH(order_date) = 3",
-  "rows": [...],
-  "executionTimeMs": 142
+  "naturalLanguageQuery": "Get all users created after 2022",
+  "generatedSql": "SELECT * FROM users WHERE created_at > '2022-01-01';",
+  "explanation": "This query selects all users whose creation date is after January 1, 2022. It's written in SQL for relational databases like MySQL or PostgreSQL.",
+  "results": null,
+  "executionMetrics": {
+    "executionTimeMillis": 7860,
+    "resultCount": 0,
+    "status": "COMPLETED"
+  },
+  "timestamp": "2025-06-25T15:13:09.5534426Z",
+  "queryId": null,
+  "error": null
 }
 ```
 
