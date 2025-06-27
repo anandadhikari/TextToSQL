@@ -1,35 +1,154 @@
 spring:
   profiles:
-    active: local  # can be overridden by SPRING_PROFILES_ACTIVE env variable
+    active: local
   main:
     allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/text_to_sql?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 2000000
+      connection-timeout: 30000
+      pool-name: TextToSQLPool
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc:
+          time_zone: UTC
+  sql:
+    init:
+      mode: always
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=300s
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 5000
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
 
 server:
   port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+    min-response-size: 1024
 
 logging:
   level:
     root: INFO
     org.springframework: INFO
     com.ai.texttosql: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+    max-size: 10MB
+    max-history: 30
 
 management:
   endpoints:
     web:
       exposure:
-        include: health, info, metrics, prometheus
+        include: health,info,metrics,prometheus,env,beans,mappings
+      base-path: /management
+      path-mapping:
+        health: health
   endpoint:
     health:
       show-details: always
+      show-components: always
+    metrics:
+      enabled: true
     prometheus:
       enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+        step: 1m
+        descriptions: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5,0.75,0.95,0.99
+    tags:
+      application: ${spring.application.name}
+      region: local
+    enable:
+      all: true
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+            percentiles: 0.5,0.75,0.95,0.99
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
-    operations-sorter: method       # Sorts endpoints by HTTP method
-    tags-sorter: alpha              # Sorts tags alphabetically
-    doc-expansion: list             # Expand only the list of tags initially
-    display-request-duration: true  # Show request duration in UI
-    filter: true                    # Adds a search bar to filter API operations
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: list
+    display-request-duration: true
+    filter: true
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: text-to-sql
+      paths-to-match: /api/**
+      packages-to-scan: com.ai.texttosql.controller
 
+ollama:
+  model:
+    name: llama3.2
+    baseUrl: http://localhost:11434
+
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets
+      url: /api/**
+      rate-limit: 100, 1m
+      http-response-body: '{"status":429,"message":"Rate limit exceeded. Please try again later."}'
+      http-response-headers: 'Content-Type=application/json'
+
+app:
+  security:
+    rate-limit:
+      enabled: true
+      default-limit: 100
+      default-window: 60s
+  monitoring:
+    enabled: true
+    metrics:
+      enabled: true
+      export:
+        prometheus:
+          enabled: true
+    tracing:
+      enabled: false
+    logging:
+      enabled: true
+      level: INFO

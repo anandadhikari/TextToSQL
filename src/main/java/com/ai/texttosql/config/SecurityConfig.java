@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/actuator/**"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(withDefaults());
 
