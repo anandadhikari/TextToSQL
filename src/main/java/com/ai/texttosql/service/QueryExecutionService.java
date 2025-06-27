@@ -55,7 +55,7 @@ public class QueryExecutionService {
     private List<Map<String, Object>> convertResultsToMap(List<Object[]> results) {
         return results.stream()
                 .map(row -> {
-                    Object[] columns = (Object[]) row;
+                    Object[] columns = row;
                     Map<String, Object> rowMap = new java.util.HashMap<>();
                     for (int i = 0; i < columns.length; i++) {
                         rowMap.put("column_" + (i + 1), columns[i]);

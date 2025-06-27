@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: local  # can be overridden by SPRING_PROFILES_ACTIVE env variable
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   port: 8080

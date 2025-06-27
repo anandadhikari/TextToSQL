@@ -15,7 +15,7 @@ public class QueryHistoryService {
 
     private final QueryHistoryRepository queryHistoryRepository;
 
-    public QueryHistory saveQuery(QueryResponse queryResponse) {
+    public QueryHistory saveQuery(QueryResponse queryResponse, String userId) {
         QueryHistory queryHistory = new QueryHistory();
         queryHistory.setNaturalLanguageQuery(queryResponse.getNaturalLanguageQuery());
         queryHistory.setGeneratedSql(queryResponse.getGeneratedSql());
@@ -38,7 +38,7 @@ public class QueryHistoryService {
         }
 
         // Set a default userId or leave it null/empty
-        queryHistory.setUserId("system"); // or just don't set it if you want null
+        queryHistory.setUserId(userId); // or just don't set it if you want null
 
         return queryHistoryRepository.save(queryHistory);
     }
@@ -50,6 +50,11 @@ public class QueryHistoryService {
     public Optional<QueryHistory> getQueryById(UUID queryId) {
         return queryHistoryRepository.findById(queryId);
     }
+
+    public Optional<QueryHistory> getQueryHistoryByUserID(String userId) {
+        return queryHistoryRepository.getQueryHistoryByUserId(userId);
+    }
+
 
     public List<QueryHistory> getRecentQueries() {
         return queryHistoryRepository.findTop50ByOrderByTimestampDesc();

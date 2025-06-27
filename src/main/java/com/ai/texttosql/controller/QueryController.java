@@ -45,7 +45,7 @@ public class QueryController {
         executionResponse.setExplanation(sqlResponse.getExplanation());
 
         // Save to history
-        queryHistoryService.saveQuery(executionResponse);
+        queryHistoryService.saveQuery(executionResponse,"system");
 
         return ResponseEntity.ok(executionResponse);
     }
@@ -69,5 +69,12 @@ public class QueryController {
     public ResponseEntity<List<QueryHistory>> getRecentQueries() {
         List<QueryHistory> recentQueries = queryHistoryService.getRecentQueries();
         return ResponseEntity.ok(recentQueries);
+    }
+
+    @GetMapping("/explain/{userId}")
+    @Operation(summary = "Get explanation for a specific query By UserID")
+    public ResponseEntity<Optional<QueryHistory>> getQueryHistoryByUserID(@PathVariable String userId) {
+        Optional<QueryHistory> history = queryHistoryService.getQueryHistoryByUserID(userId);
+        return ResponseEntity.ok(history);
     }
 }

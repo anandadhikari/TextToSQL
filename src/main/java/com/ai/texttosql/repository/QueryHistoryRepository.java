@@ -12,9 +12,12 @@ public interface QueryHistoryRepository extends JpaRepository<QueryHistory, UUID
     // Get all queries ordered by timestamp (most recent first)
     List<QueryHistory> findAllByOrderByTimestampDesc();
 
-    // Find by ID only
-    Optional<QueryHistory> findById(UUID id);
+    // Find by query ID only
+    Optional<QueryHistory> findById(UUID queryId);
 
     // Optional: Get recent queries (limit to 50 for performance)
     List<QueryHistory> findTop50ByOrderByTimestampDesc();
+
+    // Find by User ID only
+    Optional<QueryHistory> getQueryHistoryByUserId(String userId);
 }

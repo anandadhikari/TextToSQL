@@ -191,7 +191,7 @@ public class TextToSqlService {
                 SQL Query:""".formatted(schemaContext, naturalLanguageQuery);
     }
 
-    private String extractSqlFromResponse(String rawResponse) {
+    public String extractSqlFromResponse(String rawResponse) {
         if (rawResponse == null || rawResponse.trim().isEmpty()) {
             return "";
         }
