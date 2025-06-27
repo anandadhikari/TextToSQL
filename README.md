@@ -147,10 +147,7 @@ Given the schema: <...>, write a MySQL query for:
 ## ⛏ TODO
 
 * Add security (JWT + role-based access control)
-* Integrate Slack bot to interact with backend via natural language
-* Optimize prompts and query response logic
 * Add more endpoints (e.g., saved queries, query editing)
-* Add rate limiting and caching at API level
 * Improve logging and monitoring (e.g., ELK, Prometheus/Grafana)
 
 
